@@ -26,7 +26,7 @@ var serverNet = net.createServer(function(socke) {
 	socket.pipe(socket);
 });
 
-serverNet.listen(1337, '192.168.1.143');
+serverNet.listen(1337, 'homeautomation.codeblox.co.za');
 
 var serverAndroid = net.createServer(function(s){
 
@@ -63,7 +63,7 @@ var serverAndroid = net.createServer(function(s){
     });
 });
 
-serverAndroid.listen(6663, '192.168.1.143');
+serverAndroid.listen(6663, 'homeautomation.codeblox.co.za');
 
 //Error handling used by all endpoints
 function handleError(res, reason, message, code) {
