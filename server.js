@@ -14,11 +14,13 @@ app.use(bodyParser.urlencoded());
 var router = express.Router();
 var sockets = [];
 
+//Local connection 
 var server = app.listen(process.env.PORT || 3000,function(){
   var port = server.address().port;
   console.log("Server running on port: " + port);
 });
 
+//web remote connection
 var serverNet = net.createServer(function(socke) {
 
     socket=socke;
@@ -28,6 +30,7 @@ var serverNet = net.createServer(function(socke) {
 
 serverNet.listen(1337, 'homeautomation.codeblox.co.za');
 
+//Android connection 
 var serverAndroid = net.createServer(function(s){
 
 	console.log('Android connection - Server IP:6663');
@@ -40,14 +43,14 @@ var serverAndroid = net.createServer(function(s){
     s.on('data', function(data) {
      
         if(data == 3) {
-        	console.log('Server:close request');
+        	console.log('Android:close request');
 			  socket.write(''+0);
 			  socket.pipe(socket);
 		
 
         }
-        if(data == '2') {
-        	console.log('Server:open request');
+        if(data == 2) {
+        	console.log('Android:open request');
 			  socket.write(''+1);
 			  socket.pipe(socket);
 
@@ -71,7 +74,7 @@ function handleError(res, reason, message, code) {
   res.status(code || 500).json({"error": message});
 }
 
-// Returns a person with existing email
+//Returns a person with existing email
 app.get('/returnUser/:email/:pass', function(req, res){
     var emailadd = req.params.email;
     var password = req.params.pass;
@@ -94,6 +97,7 @@ app.get('/returnUser/:email', function(req, res){
     });
 });
 
+//password registration 
 app.post('/registration', function(req, res){
     console.log(req.body.email);
     bcrypt.genSalt(10, function(err, salt){
@@ -107,22 +111,17 @@ app.post('/registration', function(req, res){
    });
 });
 
-//closing gate
+//closing from remote
 app.get('/close', function(req, res){
-  //console.log(req);
-  console.log("Close request recieved");
+  console.log("Remote:Close request");
   socket.write(''+0);
   socket.pipe(socket);
 });
 
-//open gate
+//open gate from remote 
 app.get('/open', function(req, res){
-  console.log("Open request recieved");
+  console.log("Remote:Open request");
   socket.write(''+1);
   socket.pipe(socket);
 });
-//To do for muli threading
-//Close connection after someone disconnects
-//socket array
 
-//To do to allow android to connect .... listen on local port 6663 and allow incoming info ie 1/0 to trigger /open/close
