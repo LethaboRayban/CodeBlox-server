@@ -1,4 +1,8 @@
-var express = require("express");
+/**********************************************************************
+  Server for incoming connection from clients
+**********************************************************************/
+
+var express = require('express');
 var app = express();
 var mongo = require('mongojs');
 var db = mongo('dbPerson', ['persons']);
@@ -14,7 +18,7 @@ app.use(bodyParser.urlencoded());
 var router = express.Router();
 var sockets = [];
 
-var server = app.listen(process.env.PORT || 3000,function(){
+var server = app.listen(process.env.PORT || 3030,function(){
   var port = server.address().port;
   console.log("Server running on port: " + port);
 });
@@ -26,7 +30,7 @@ var serverNet = net.createServer(function(socke) {
 	socket.pipe(socket);
 });
 
-serverNet.listen(1337, 'homeautomation.codeblox.co.za');
+serverNet.listen(1337,'10.8.0.1');
 
 var serverAndroid = net.createServer(function(s){
 
@@ -63,7 +67,7 @@ var serverAndroid = net.createServer(function(s){
     });
 });
 
-serverAndroid.listen(6663, 'homeautomation.codeblox.co.za');
+serverAndroid.listen(6663, '10.8.0.1');
 
 //Error handling used by all endpoints
 function handleError(res, reason, message, code) {
