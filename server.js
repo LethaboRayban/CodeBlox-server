@@ -15,7 +15,7 @@ var router = express.Router();
 var sockets = [];
 
 //Local connection 
-var server = app.listen(process.env.PORT || 3000,function(){
+var server = app.listen(process.env.PORT || 3030,function(){
   var port = server.address().port;
   console.log("Server running on port: " + port);
 });
@@ -28,7 +28,7 @@ var serverNet = net.createServer(function(socke) {
 	socket.pipe(socket);
 });
 
-serverNet.listen(1337, 'homeautomation.codeblox.co.za');
+serverNet.listen(1337, '10.8.0.1');
 
 //Android connection 
 var serverAndroid = net.createServer(function(s){
@@ -49,11 +49,22 @@ var serverAndroid = net.createServer(function(s){
 		
 
         }
-        if(data == 2) {
+        if(data == '2') {
         	console.log('Android:open request');
 			  socket.write(''+1);
 			  socket.pipe(socket);
 
+        }
+        
+        if(data == 4) {
+        	console.log('Android: On Circuit');
+			    socket.write(''+3);
+			    socket.pipe(socket);
+        }
+        if(data == 5) {
+        	console.log('Android: On Circuit');
+			    socket.write(''+2);
+			    socket.pipe(socket);
         }
     });
 
@@ -66,7 +77,7 @@ var serverAndroid = net.createServer(function(s){
     });
 });
 
-serverAndroid.listen(6663, 'homeautomation.codeblox.co.za');
+serverAndroid.listen(6663, '10.8.0.1');
 
 //Error handling used by all endpoints
 function handleError(res, reason, message, code) {
