@@ -13,6 +13,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 var router = express.Router();
 var sockets = [];
+var dev=0;
 
 //Local connection 
 var server = app.listen(process.env.PORT || 3030,function(){
@@ -26,6 +27,18 @@ var serverNet = net.createServer(function(socke) {
     socket=socke;
 	socket.write(''+0);
 	socket.pipe(socket);
+ 
+  socket.on('data', function(data) {
+     if (dev==0){}
+     else{
+        	console.log('ding dong '+data);
+  			 // s.write(''+0);
+  			 // s.pipe(socket);
+          for (var devices=0;devices<dev;devices++)
+  		    sockets[devices].write('There is someone at your gate\n');
+              }
+  });
+        
 });
 
 serverNet.listen(1337, '10.8.0.1');
@@ -36,40 +49,146 @@ var serverAndroid = net.createServer(function(s){
 	console.log('Android connection - Server IP:6663');
 	console.log('Connected: ' + s.remoteAddress + ':' + s.remotePort);
     sockets.push(s);
-
+    sockets[dev]=s;
+   
+    var id=dev; 
+    dev++;
     s.write('Welcome to the server!\n');
     
  
     s.on('data', function(data) {
+        console.log('Data received');
+        var temp=data.toString();
+        console.log(data+" this is the input");
      
-        if(data == 3) {
+        if(data == 'b') {
         	console.log('Android:close request');
-			  socket.write(''+0);
-			  socket.pipe(socket);
-		
-
+  			  socket.write(''+0);
+  			  socket.pipe(socket);
+  		    s.write('Gate is closed\n');
         }
-        if(data == '2') {
+        if(data == 'a') {
         	console.log('Android:open request');
-			  socket.write(''+1);
-			  socket.pipe(socket);
-
+  			  socket.write(''+1);
+  			  socket.pipe(socket);
+          s.write('Gate is open!\n');
         }
         
-        if(data == 4) {
-        	console.log('Android: On Circuit');
+        if(data == 'd') {
+        	console.log('Android: Appliance 1 off');
 			    socket.write(''+3);
 			    socket.pipe(socket);
+//          s.write('Turning appliance on!\n');
         }
-        if(data == 5) {
-        	console.log('Android: On Circuit');
+        if(data == 'c') {
+        	console.log('Android: Appliance 1 on');
 			    socket.write(''+2);
 			    socket.pipe(socket);
+    //      s.write('Turning appliance off!\n');
+        }
+        
+        if(data == 'e') {
+        	console.log('Android: Appliance 2 off');
+			    socket.write(''+5);
+			    socket.pipe(socket);
+  //        s.write('Turning appliance on!\n');
+        }
+        if(data == 'f') {
+        	console.log('Android: Appliance 2 on');
+			    socket.write(''+4);
+			    socket.pipe(socket);
+      //    s.write('Turning appliance off!\n');
+        }
+        
+        if(data == 'g') {
+        	console.log('Android: Appliance 3 off');
+			    socket.write(''+7);
+			    socket.pipe(socket);
+        //  s.write('Turning appliance on!\n');
+        }
+        if(data == 'h') {
+        	console.log('Android: Appliance 3 on');
+			    socket.write(''+6);
+			    socket.pipe(socket);
+          //s.write('Turning appliance off!\n');
+        }
+        
+        if(data == 'i') {
+        	console.log('Android: Appliance 4 off');
+			    socket.write(''+9);
+			    socket.pipe(socket);
+         // s.write('Turning appliance on!\n');
+        }
+        if(data == 'j') {
+        	console.log('Android: Appliance 4 on');
+			    socket.write(''+8);
+			    socket.pipe(socket);
+          //s.write('Turning appliance off!\n');
+        }
+        
+        // Appliances 5 to Appliance 8
+        
+        if(data == 'k') {
+        	console.log('Android: Appliance 5 off');
+			    socket.write(''+11);
+			    socket.pipe(socket);
+          //s.write('Turning appliance on!\n');
+        }
+        if(data == 'l') {
+        	console.log('Android: Appliance 5 on');
+			    socket.write(''+10);
+			    socket.pipe(socket);
+          //s.write('Turning appliance off!\n');
+        }
+        
+        if(data == 'm') {
+        	console.log('Android: Appliance 6 off');
+			    socket.write(''+13);
+			    socket.pipe(socket);
+          //s.write('Turning appliance on!\n');
+        }
+        if(data == 'n') {
+        	console.log('Android: Appliance 6 on');
+			    socket.write(''+12);
+			    socket.pipe(socket);
+          //s.write('Turning appliance off!\n');
+        }
+        
+        if(data == 'o') {
+        	console.log('Android: Appliance 7 off');
+			    socket.write(''+15);
+			    socket.pipe(socket);
+          //s.write('Turning appliance on!\n');
+        }
+        if(data == 'p') {
+        	console.log('Android: Appliance 7 on');
+			    socket.write(''+14);
+			    socket.pipe(socket);
+          //s.write('Turning appliance off!\n');
+        }
+        
+        if(data == 'q') {
+        	console.log('Android: Appliance 8 off');
+			    socket.write(''+17);
+			    socket.pipe(socket);
+          //s.write('Turning appliance on!\n');
+        }
+        if(data == 'r') {
+        	console.log('Android: Appliance 8 on');
+			    socket.write(''+16);
+			    socket.pipe(socket);
+          //s.write('Turning appliance off!\n');
         }
     });
 
     s.on('end', function() {
         console.log('Disconnected: ' + s.remoteAddress + ':' + s.remotePort);
+        for (var die=id;die<dev-1;die++){
+          sockets[die]=sockets[die+1];
+        }
+        dev--;
+        
+        
         var index = sockets.indexOf(s);
         if (index != -1) {
             delete sockets[index];
